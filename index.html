@@ -1,94 +1,106 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Job Application Form</title>
+    <title>Dictionary App</title>
 
+    <style>
 
+        body{
+            font-family: Arial;
+            background:lightgray;
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            height:100vh;
+        }
+
+        .container{
+            background:wheat;
+            padding:30px;
+            width:350px;
+            border-radius:10px;
+            box-shadow:0 0 10px rgba(0,0,0,0.2);
+            text-align:center;
+        }
+
+        input{
+            width:80%;
+            padding:10px;
+            margin:10px 0;
+        }
+
+        button{
+            padding:10px 20px;
+            background:blue;
+            color:white;
+            border:none;
+            cursor:pointer;
+        }
+
+        button:hover{
+            background:darkblue;
+        }
+
+        #result{
+            margin-top:20px;
+            text-align:left;
+        }
+
+    </style>
+</head>
 <body>
 
-<div class="container">
+    <div class="container">
 
-    <h1>Job Application Form</h1>
+        <h1>Dictionary App</h1>
 
-    <!-- Image -->
-    <img width="200px" height="200px"src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/ed/Nokia_office_building_in_Hervanta_Tampere_1.jpg/250px-Nokia_office_building_in_Hervanta_Tampere_1.jpg">
-    <!-- Description -->
-    <div class="description">
-        <p>
-            Thank you for your interest in joining our company.
-            Please complete the application form below with accurate details.
-            Our recruitment team will contact shortlisted candidates.
-        </p>
+        <input type="text" id="wordInput" placeholder="Enter a word">
+
+        <br>
+
+        <button onclick="searchWord()">Search</button>
+
+        <div id="result"></div>
+
     </div>
 
-    <!-- Form -->
-    <form>
+    <script>
 
-        <table>
-            <tr>
-                <th>Application Details</th>
-                <th>Enter Information</th>
-            </tr>
+        async function searchWord() {
 
-            <tr>
-                <td>Full Name</td>
-                <td><input type="text" placeholder="Enter your full name"></td>
-            </tr>
+            const word = document.getElementById("wordInput").value;
 
-            <tr>
-                <td>Email Address</td>
-                <td><input type="email" placeholder="Enter your email"></td>
-            </tr>
+            const result = document.getElementById("result");
 
-            <tr>
-                <td>Phone Number</td>
-                <td><input type="tel" placeholder="Enter your phone number"></td>
-            </tr>
+            result.innerHTML = "Loading...";
 
-            <tr>
-                <td>Position Applying For</td>
-                <td>
-                    <select>
-                        <option>Software Developer</option>
-                        <option>Web Designer</option>
-                        <option>Data Analyst</option>
-                        <option>HR Executive</option>
-                    </select>
-                </td>
-            </tr>
+            try {
 
-            <tr>
-                <td>Upload Resume</td>
-                <td><input type="file"></td>
-            </tr>
+                const response = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${word}`);
 
-            <tr>
-                <td>Why Should We Hire You?</td>
-                <td>
-                    <textarea rows="4" placeholder="Write your answer"></textarea>
-                </td>
-            </tr>
-        </table>
+                const data = await response.json();
 
-        <!-- Submit Button -->
-        <button type="submit" class="btn">
-            Submit Application
-        </button>
+                result.innerHTML = `
+                    <h2>${data[0].word}</h2>
 
-    </form>
+                    <p>
+                        <b>Meaning:</b>
+                        ${data[0].meanings[0].definitions[0].definition}
+                    </p>
 
-    <!-- Contact Info -->
-    <div class="contact">
-        <h3>Contact Information</h3>
-        <p><strong>Company Name:</strong>EPICOR SYSTEMS</p>
-        <p><strong>Email:</strong> careers@epicorsystems.com</p>
-        <p><strong>Phone:</strong> +91 9876543210</p>
-        <p><strong>Location:</strong> banagalor, karnataka, India</p>
-    </div>
+                    <p>
+                        <b>Part of Speech:</b>
+                        ${data[0].meanings[0].partOfSpeech}
+                    </p>
+                `;
 
-</div>
+            } catch (error) {
+
+                result.innerHTML = "Word not found!";
+            }
+        }
+
+    </script>
 
 </body>
 </html>
